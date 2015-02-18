@@ -7,7 +7,20 @@
 ## This function will cache the inverse of a matrix.
 
 makeCacheMatrix <- function(x = matrix()) {
-
+  m <- NULL  #invalidate the cache by nullifying it both in local and parent's scopes.
+  set <- function(y) {
+    x <<- y 
+    m <<- NULL
+  }
+  get <- function() x
+  ## setsolve store the incoming value to the enclosing environment so it is 
+  ## store beyond the scope of this method. This makes the value stored available 
+  ## even after this method finished running. 
+  setsolve <- function(solve) m <<- solve
+  getsolve <- function() m
+  list(set = set, get = get,
+       setsolve = setsolve,
+       getsolve = getsolve)
 }
 
 
@@ -16,4 +29,14 @@ makeCacheMatrix <- function(x = matrix()) {
 
 cacheSolve <- function(x, ...) {
         ## Return a matrix that is the inverse of 'x'
+  m <- x$getsolve()
+  if(!is.null(m)) {
+    message("getting cached data")
+    return(m)
+  }
+  data <- x$get()
+  ## caculate the inverse of the input matrix and store it in x's enclosing environment.
+  m <- solve(data, ...)
+  x$setsolve(m)
+  m
 }
