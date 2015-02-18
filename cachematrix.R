@@ -7,17 +7,32 @@
 ## This function will cache the inverse of a matrix.
 
 makeCacheMatrix <- function(x = matrix()) {
-  m <- NULL  #invalidate the cache by nullifying it both in local and parent's scopes.
+  #invalidate the cache by nullifying it in local scope.
+  m <- NULL  
   set <- function(y) {
+    ## Assign the original matrix to the enclosing environment. 
     x <<- y 
+    ## Nullify the cache in the enclosing environment.
     m <<- NULL
   }
-  get <- function() x
+  ## Return the original matrix
+  get <- function(){
+    x
+  } 
+  
   ## setsolve store the incoming value to the enclosing environment so it is 
   ## store beyond the scope of this method. This makes the value stored available 
   ## even after this method finished running. 
-  setsolve <- function(solve) m <<- solve
-  getsolve <- function() m
+  setsolve <- function(solve){
+    m <<- solve
+  }
+  
+  ## Return the stored inverse matrix if m is set. Otherwise return null as initially
+  ## set or by user calling set()
+  getsolve <- function(){
+    m
+  } 
+  ## return a list of functions just defined using labels the same as the function name
   list(set = set, get = get,
        setsolve = setsolve,
        getsolve = getsolve)
@@ -28,14 +43,15 @@ makeCacheMatrix <- function(x = matrix()) {
 ## cached. If it is cached, it will return the cached version.
 
 cacheSolve <- function(x, ...) {
-        ## Return a matrix that is the inverse of 'x'
+  ## Retrieve what is stored in x's cache - which can be null.
   m <- x$getsolve()
   if(!is.null(m)) {
     message("getting cached data")
     return(m)
   }
+  ## Retrieve the original matrix stored in x's cache
   data <- x$get()
-  ## caculate the inverse of the input matrix and store it in x's enclosing environment.
+  ## calculate the inverse of the original matrix and store it in x's enclosing environment.
   m <- solve(data, ...)
   x$setsolve(m)
   m
