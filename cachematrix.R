@@ -1,8 +1,8 @@
 ## For expensive computations, caching is a great technique to speed things up. 
-## These function will cache the inverse of a matrix then return a cached copy
-## to improve performance of that matrix.
-## Both functions assume the input matrix is a square matrix that can be 
-## inversed. 
+## These functions cache the inverse of a matrix after it was first computed then return
+## the cached copy thereafter to avoid computing the inverse matrix more than once.
+## The cachesolve function assumes the input matrix is a square matrix and it can be  
+## inversed (a non singular matrix). 
 
 ## This function will cache the inverse of a matrix.
 
@@ -32,7 +32,8 @@ makeCacheMatrix <- function(x = matrix()) {
   getsolve <- function(){
     m
   } 
-  ## return a list of functions just defined using labels the same as the function name
+  ## return a list of functions just defined using labels that have the same names as the
+  ## functions.
   list(set = set, get = get,
        setsolve = setsolve,
        getsolve = getsolve)
@@ -52,7 +53,8 @@ cacheSolve <- function(x, ...) {
   ## m (the cache) is null so we have to calculate the inverse matrix
   ## Retrieve the original matrix stored in x's cache
   data <- x$get()
-  ## Record the elpase time to compare with getting it from cache
+  ## Record the elpase time so we can compare it with how long it takes to getting
+  ## the same result from cache
   elapse <- system.time(
       ## calculate the inverse of the original matrix.
       m <- solve(data, ...)
