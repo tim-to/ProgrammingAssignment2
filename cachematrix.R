@@ -46,21 +46,21 @@ cacheSolve <- function(x, ...) {
   ## Retrieve what is stored in x's cache - which can be null.
   m <- x$getsolve()
   if(!is.null(m)) {
-    # record the elpase time to compare with calculating inverse matrix.
-
-    elapse <- system.time(
+        message("Getting inverse matrix from cache...")
         return(m)
-    )
-    message("Time taken to get cached data", elpase)
   }
+  ## m (the cache) is null so we have to calculate the inverse matrix
   ## Retrieve the original matrix stored in x's cache
   data <- x$get()
-  ## calculate the inverse of the original matrix and store it in x's enclosing environment.
   ## Record the elpase time to compare with getting it from cache
   elapse <- system.time(
+      ## calculate the inverse of the original matrix.
       m <- solve(data, ...)
   )
-  message ("Time taken to calculate inverse:", elapse)
+  message ("Time taken to calculate inverse matrix: ", elapse)
+  # For a large matrix of 1,000,000 elements it took 1.7 - 1.9 seconds to compute its inverse.
+  # Storing the computed inverse matrix to x's enclosing environment
   x$setsolve(m)
+  #return the inverse matrix.
   m
 }
