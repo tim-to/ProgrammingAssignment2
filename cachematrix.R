@@ -39,20 +39,28 @@ makeCacheMatrix <- function(x = matrix()) {
 }
 
 
-## This function will compute the inverse of a matrix if it isn't already 
+## This function computes the inverse of a matrix if it isn't already 
 ## cached. If it is cached, it will return the cached version.
 
 cacheSolve <- function(x, ...) {
   ## Retrieve what is stored in x's cache - which can be null.
   m <- x$getsolve()
   if(!is.null(m)) {
-    message("getting cached data")
-    return(m)
+    # record the elpase time to compare with calculating inverse matrix.
+
+    elapse <- system.time(
+        return(m)
+    )
+    message("Time taken to get cached data", elpase)
   }
   ## Retrieve the original matrix stored in x's cache
   data <- x$get()
   ## calculate the inverse of the original matrix and store it in x's enclosing environment.
-  m <- solve(data, ...)
+  ## Record the elpase time to compare with getting it from cache
+  elapse <- system.time(
+      m <- solve(data, ...)
+  )
+  message ("Time taken to calculate inverse:", elapse)
   x$setsolve(m)
   m
 }
